@@ -5,7 +5,7 @@ const mqtt = require('mqtt');
 const mqtt_addr = process.env.MQTT_ADDR || 'mqtt://try:try@broker.shiftr.io'
 
 const client = mqtt.connect(mqtt_addr, {
-  clientId: 'genio-distribuido'
+  clientId: 'genio-da-lampada'
 });
 
 exports.LaunchRequestHandler = {
@@ -13,7 +13,7 @@ exports.LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = 'Olá, sou o Gênio Distribuído! Eu te ajudarei na sua automação residencial. Peça "ajuda" aqui mesmo se você não me conhece.';
+    const speechText = 'Olá, sou o Gênio da Lâmpada! Eu te ajudarei na sua automação residencial. Peça "ajuda" aqui mesmo se você não me conhece.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
