@@ -18,7 +18,7 @@ skillBuilder.addRequestHandlers(handlers.ErrorHandler);
 
 const skill = skillBuilder.create();
 
-const adapter = new ExpressAdapter(skill, false, false);
+const adapter = new ExpressAdapter(skill, true, true);
 
 const port = process.env.PORT || 3333;
 
