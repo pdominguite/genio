@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/genio/index', (req, res) => {
-  console.log(req.body);
+  console.log(req.body.request.intent);
   console.log(req.headers);
   return res.status(200).json({
     "message":"OK"
