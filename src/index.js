@@ -32,5 +32,5 @@ app.get('/', (req, res) => {
 app.post('/genio', adapter.getRequestHandlers());
 
 app.listen(port, () => {
-  console.log("Server started!");
+  console.log("🚀 Server started!");
 });
