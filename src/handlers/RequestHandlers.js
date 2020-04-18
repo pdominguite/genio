@@ -18,7 +18,7 @@ exports.LaunchRequestHandler = {
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Gênio de Lâmpada', speechText)
       .getResponse();
   }
 };
@@ -30,7 +30,7 @@ exports.TurnOnLightHandler = {
     && getIntentName(handlerInput.requestEnvelope) === 'TurnOnLightIntent';
   },
   handle(handlerInput) {
-    const speechText = "Pronto! Luzes acesas!"
+    const speechText = "Pronto! Luz acesa!"
     client.publish('/light', '1');
   return handlerInput.responseBuilder
     .speak(speechText)
@@ -45,7 +45,7 @@ exports.TurnOffLightHandler = {
     && getIntentName(handlerInput.requestEnvelope) === 'TurnOffLightIntent';
   },
   handle(handlerInput) {
-    const speechText = "Certo! Apaguei as luzes!"
+    const speechText = "Certo! Apaguei a luz!"
     client.publish('/light', '0'); 
   return handlerInput.responseBuilder
     .speak(speechText)
@@ -64,7 +64,7 @@ exports.HelpIntentHandler = {
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Gênio de Lâmpada', speechText)
       .getResponse();
   }
 };
@@ -80,7 +80,7 @@ exports.CancelAndStopIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Gênio de Lâmpada', speechText)
       .withShouldEndSession(true)
       .getResponse();
   }
@@ -102,13 +102,12 @@ exports.FallbackIntentHandler = {
     && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent';
   },
   handle(handlerInput) {
-    const speechText = 'Desculpe, mas não entendi seu comando! Tente de novo.';
-    const speechText2 = 'Não entendi seu comando! Acho que não sou tão gênio assim.';
+    const speechText = 'Não entendi seu comando! Acho que não sou tão gênio assim. Tente de novo.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .reprompt(speechText2)
-      .withSimpleCard('Hello World', speechText)
+      .reprompt(speechText)
+      .withSimpleCard('Gênio de Lâmpada', speechText)
       .getResponse();
   }
 };
