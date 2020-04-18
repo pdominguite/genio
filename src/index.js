@@ -2,7 +2,13 @@ const express = require('express');
 
 const app = express();
 
+const port = process.env.PORT || 3333;
+
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  return res.status(200).send("OK");
+});
 
 app.get('/genio/index', (req, res) => {
   console.log(req.body);
@@ -18,6 +24,6 @@ app.post('/genio', (req, res) => {
   return res.status(204).json();
 })
 
-app.listen(3333, () => {
+app.listen(port, () => {
   console.log("Server started!");
 });
