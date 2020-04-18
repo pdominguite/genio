@@ -1,42 +1,34 @@
 const express = require('express');
-const alexa = require('ask-sdk');
+const Alexa = require('ask-sdk-core');
+
+const { ExpressAdapter } = require('ask-sdk-express-adapter');
+
+const handlers = require('./handlers/RequestHandlers');
 
 const app = express();
 
-const port = process.env.PORT || 3334;
+const skillBuilder = Alexa.SkillBuilders.custom();
+skillBuilder.addRequestHandlers(handlers.LaunchRequestHandler);
+skillBuilder.addRequestHandlers(handlers.TurnOffLightHandler);
+skillBuilder.addRequestHandlers(handlers.TurnOnLightHandler);
+skillBuilder.addRequestHandlers(handlers.HelpIntentHandler);
+skillBuilder.addRequestHandlers(handlers.CancelAndStopIntentHandler);
+skillBuilder.addRequestHandlers(handlers.SessionEndedRequestHandler);
+skillBuilder.addRequestHandlers(handlers.ErrorHandler);
 
-app.use(express.json());
+const skill = skillBuilder.create();
 
-const LaunchRequestHandler = {
-  canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest';
-  },
-  handle(handlerInput) {
-    const speechText = 'Luz acesa!';
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
-      .getResponse();
-  },
-};
+const adapter = new ExpressAdapter(skill, false, false);
+
+const port = process.env.PORT || 3333;
 
 app.get('/', (req, res) => {
-  return res.status(200).send("OK");
+  return res.status(200).json({
+    "message" : "This is a Node.js server for an Alexa Skill."
+  });
 });
 
-app.get('/genio/index', (req, res) => {
-  console.log(req.body.request.intent);
-  console.log(req.headers);
-  return res.status(200).json({
-    "message":"OK"
-  });
-})
-
-app.post('/genio', (req, res) => {
-  //console.log(req.body.request.intent);
-  return LaunchRequestHandler;
-})
+app.post('/genio', adapter.getRequestHandlers());
 
 app.listen(port, () => {
   console.log("Server started!");
