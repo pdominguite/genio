@@ -19,7 +19,7 @@ app.get('/genio/index', (req, res) => {
 })
 
 app.post('/genio', (req, res) => {
-  console.log(req.body);
+  console.log(req.body.request.intent);
   console.log(req.headers);
   return res.status(204).json();
 })
