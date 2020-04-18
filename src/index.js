@@ -14,6 +14,7 @@ skillBuilder.addRequestHandlers(handlers.TurnOnLightHandler);
 skillBuilder.addRequestHandlers(handlers.HelpIntentHandler);
 skillBuilder.addRequestHandlers(handlers.CancelAndStopIntentHandler);
 skillBuilder.addRequestHandlers(handlers.SessionEndedRequestHandler);
+skillBuilder.addRequestHandlers(handlers.FallbackIntentHandler);
 skillBuilder.addRequestHandlers(handlers.ErrorHandler);
 
 const skill = skillBuilder.create();

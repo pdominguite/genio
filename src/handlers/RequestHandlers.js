@@ -96,6 +96,23 @@ exports.SessionEndedRequestHandler = {
   }
 };
 
+exports.FallbackIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+    && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent';
+  },
+  handle(handlerInput) {
+    const speechText = 'Desculpe, mas não entendi seu comando! Tente de novo.';
+    const speechText2 = 'Não entendi seu comando! Acho que não sou tão gênio assim.';
+
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(speechText2)
+      .withSimpleCard('Hello World', speechText)
+      .getResponse();
+  }
+};
+
 exports.ErrorHandler = {
   canHandle() {
     return true;
