@@ -1,11 +1,19 @@
 const { getRequestType, getIntentName } = require('ask-sdk-core');
 
+const mqtt = require('mqtt');
+
+const mqtt_addr = process.env.MQTT_ADDR || 'mqtt://try:try@broker.shiftr.io'
+
+const client = mqtt.connect(mqtt_addr, {
+  clientId: 'genio-distribuido'
+});
+
 exports.LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = 'Bem-vindo ao Gênio Distribuído! Eu te ajudarei na sua automação residencial.';
+    const speechText = 'Olá, sou o Gênio Distribuído! Eu te ajudarei na sua automação residencial. Peça "ajuda" aqui mesmo se você não me conhece.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -23,7 +31,7 @@ exports.TurnOnLightHandler = {
   },
   handle(handlerInput) {
     const speechText = "Pronto! Luzes acesas!"
- 
+    client.publish('/light', '1');
   return handlerInput.responseBuilder
     .speak(speechText)
     .getResponse();
@@ -38,7 +46,7 @@ exports.TurnOffLightHandler = {
   },
   handle(handlerInput) {
     const speechText = "Certo! Apaguei as luzes!"
- 
+    client.publish('/light', '0'); 
   return handlerInput.responseBuilder
     .speak(speechText)
     .getResponse();
@@ -51,7 +59,7 @@ exports.HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'Você pode dizer "ligue" ou "apague" as luzes!';
+    const speechText = 'Por enquanto, você pode dizer "ligue" ou "apague" as luzes!';
 
     return handlerInput.responseBuilder
       .speak(speechText)
