@@ -102,7 +102,7 @@ exports.FallbackIntentHandler = {
     && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.FallbackIntent';
   },
   handle(handlerInput) {
-    const speechText = 'Não entendi seu comando! Acho que não sou tão gênio assim. Tente de novo.';
+    const speechText = 'Não conheço esse comando. Tente de novo.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
