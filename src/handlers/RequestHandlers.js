@@ -1,11 +1,15 @@
-const { getRequestType, getIntentName } = require('ask-sdk-core');
+const { getRequestType, getIntentName, getSlotValue } = require('ask-sdk-core');
+
+const request = require('request-promise');
 
 const mqtt = require('mqtt');
 
 const mqtt_addr = process.env.MQTT_ADDR || 'mqtt://try:try@broker.shiftr.io'
 
+const mqtt_broker = process.env.MQTT_BROKER || 'http://try:try@broker.shiftr.io'
+
 const client = mqtt.connect(mqtt_addr, {
-  clientId: 'genio-da-lampada'
+  clientId: 'genio-distribuído'
 });
 
 exports.LaunchRequestHandler = {
@@ -13,19 +17,18 @@ exports.LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
   },
   handle(handlerInput) {
-    const speechText = 'Olá, sou o Gênio da Lâmpada! Eu te ajudarei na sua automação residencial. Peça "ajuda" aqui mesmo se você não me conhece.';
+    const speechText = 'Olá, sou o Gênio Distribuído! Eu te ajudarei na sua automação residencial. Peça "ajuda" aqui mesmo se você não me conhece.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Gênio de Lâmpada', speechText)
+      .withSimpleCard('Gênio Distribuído', speechText)
       .getResponse();
   }
 };
 
 exports.TurnOnLightHandler = {
   canHandle(handlerInput) {
-    console.log(handlerInput)
     return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
     && getIntentName(handlerInput.requestEnvelope) === 'TurnOnLightIntent';
   },
@@ -40,7 +43,6 @@ exports.TurnOnLightHandler = {
 
 exports.TurnOffLightHandler = {
   canHandle(handlerInput) {
-    console.log(handlerInput)
     return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
     && getIntentName(handlerInput.requestEnvelope) === 'TurnOffLightIntent';
   },
@@ -53,10 +55,48 @@ exports.TurnOffLightHandler = {
   }
 };
 
+exports.SetTemperature = {
+  canHandle(handlerInput) {
+    return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+    && getIntentName(handlerInput.requestEnvelope) === 'SetTemperature';
+  },
+  handle(handlerInput) {
+    const speechText = "Pronto! Alterei a temperatura!"
+    client.publish('/temperature', Number(getSlotValue(handlerInput.requestEnvelope, 'Temperature')).toFixed(1)); 
+  return handlerInput.responseBuilder
+    .speak(speechText)
+    .getResponse();
+  }
+};
+
+exports.GetTemperature = {
+  canHandle(handlerInput) {
+    return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+    && getIntentName(handlerInput.requestEnvelope) === 'GetTemperature';
+  },
+  async handle(handlerInput) {
+    let speechText = "";
+    await request.get(mqtt_broker + '/temperature', (error, response, body) => {
+      if (response.statusCode === 200) {
+        if (!Number(body)) {
+          speechText = `Desculpe, mas não consegui obter a temperatura.`
+        } else {
+          speechText = `A temperatura do ambiente nesse momento é de ${Number(body)} graus!`
+        }
+      } else {
+        speechText = `Desculpe, mas não consegui obter a temperatura.`
+      }
+    });
+  return handlerInput.responseBuilder
+    .speak(speechText)
+    .getResponse();
+  }
+};
+
 exports.HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
     const speechText = 'Por enquanto, você pode dizer "ligue" ou "apague" as luzes!';
@@ -64,7 +104,7 @@ exports.HelpIntentHandler = {
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Gênio de Lâmpada', speechText)
+      .withSimpleCard('Gênio Distribuído', speechText)
       .getResponse();
   }
 };
@@ -72,15 +112,15 @@ exports.HelpIntentHandler = {
 exports.CancelAndStopIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
+     || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
     const speechText = 'Até mais!';
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Gênio de Lâmpada', speechText)
+      .withSimpleCard('Gênio Distribuído', speechText)
       .withShouldEndSession(true)
       .getResponse();
   }
@@ -91,7 +131,6 @@ exports.SessionEndedRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
   },
   handle(handlerInput) {
-    //any cleanup logic goes here
     return handlerInput.responseBuilder.getResponse();
   }
 };
@@ -107,7 +146,7 @@ exports.FallbackIntentHandler = {
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Gênio de Lâmpada', speechText)
+      .withSimpleCard('Gênio Distribuído', speechText)
       .getResponse();
   }
 };
