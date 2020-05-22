@@ -74,9 +74,9 @@ exports.GetTemperature = {
     return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
     && getIntentName(handlerInput.requestEnvelope) === 'GetTemperature';
   },
-  async handle(handlerInput) {
+  handle(handlerInput) {
     let speechText = "";
-    await request.get(mqtt_broker + '/temperature', (error, response, body) => {
+    request.get(mqtt_broker + '/temperature', (error, response, body) => {
       if (response.statusCode === 200) {
         if (!Number(body)) {
           speechText = `Desculpe, mas não consegui obter a temperatura.`
