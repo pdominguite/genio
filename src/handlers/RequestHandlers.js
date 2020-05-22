@@ -9,7 +9,7 @@ const mqtt_addr = process.env.MQTT_ADDR || 'mqtt://try:try@broker.shiftr.io'
 const mqtt_broker = process.env.MQTT_BROKER || 'http://try:try@broker.shiftr.io'
 
 const client = mqtt.connect(mqtt_addr, {
-  clientId: 'genio-distribuído'
+  clientId: 'genio-distribuido'
 });
 
 exports.LaunchRequestHandler = {
@@ -74,9 +74,9 @@ exports.GetTemperature = {
     return getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
     && getIntentName(handlerInput.requestEnvelope) === 'GetTemperature';
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     let speechText = "";
-    request.get(mqtt_broker + '/temperature', (error, response, body) => {
+    await request.get(mqtt_broker + '/temperature', (error, response, body) => {
       if (response.statusCode === 200) {
         if (!Number(body)) {
           speechText = `Desculpe, mas não consegui obter a temperatura.`
