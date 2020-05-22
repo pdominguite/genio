@@ -11,6 +11,8 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 skillBuilder.addRequestHandlers(handlers.LaunchRequestHandler);
 skillBuilder.addRequestHandlers(handlers.TurnOffLightHandler);
 skillBuilder.addRequestHandlers(handlers.TurnOnLightHandler);
+skillBuilder.addRequestHandlers(handlers.SetTemperature);
+skillBuilder.addRequestHandlers(handlers.GetTemperature);
 skillBuilder.addRequestHandlers(handlers.HelpIntentHandler);
 skillBuilder.addRequestHandlers(handlers.CancelAndStopIntentHandler);
 skillBuilder.addRequestHandlers(handlers.SessionEndedRequestHandler);
