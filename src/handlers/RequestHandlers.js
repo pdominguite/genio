@@ -99,7 +99,7 @@ exports.HelpIntentHandler = {
     && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-    const speechText = 'Por enquanto, você pode dizer "ligue" ou "apague" as luzes!';
+    const speechText = 'Por enquanto, você pode dizer "ligue" ou "apague" as luzes, consultar a temperatura do ambiente ou alterar a temperatura do ar condicionado.';
 
     return handlerInput.responseBuilder
       .speak(speechText)
