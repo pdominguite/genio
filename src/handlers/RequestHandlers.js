@@ -62,7 +62,7 @@ exports.SetTemperature = {
   },
   handle(handlerInput) {
     const speechText = "Pronto! Alterei a temperatura!"
-    client.publish('/temperature', Number(getSlotValue(handlerInput.requestEnvelope, 'Temperature')).toFixed(1)); 
+    client.publish('/ac', Number(getSlotValue(handlerInput.requestEnvelope, 'Temperature')).toFixed(1)); 
   return handlerInput.responseBuilder
     .speak(speechText)
     .getResponse();
